@@ -23,26 +23,27 @@
 \maketitle
 
 \begin{abstract}
-This document is a concept paper which describes the idea of a real-time music synthesizer. The way the music is going to be composed is somhewhat different though.
-In this case a camera input in conjunction with openCV, a computer vision framework, recognizes the hand gestures and translate these into coordinates.
-These coordinates are used to control musical parameters such as seed, keys, chord progressions and so on. The control parameters are visualized with geometrical primitives.
+This document is a concept paper which describes the idea of a real-time music sequencer which is operated by the users hand gestures. 
+The gestures are being processed into coordinates with the help of video input in conjunction with openCV, a computer vision framework. 
+These coordinates are used to control musical parameters such as speed, keys and chord progressions. The control parameters are visualized by geometrical primitives.
 \end{abstract}
 
 \tableofcontents
 
 \pagebreak
 
+
 \section{Technical setup}
 
 \subsection{Video input} \label{videoinput}
 
 The video Input will be a video camera, which is captured with a HDMI-Capture device. The reason why we are going to use a video camera instead of a webcam is the possibility
-to attach a wide angle lens to the camera in order to cover a larger area with reasonably good video quality. This offers the possibility to create a multi-user context.
+to attach a wide angle lens to the camera in order to cover a larger area with reasonably good quality. This offers the possibility to create a multi-user context.
     
 
 \subsection{Software setup}
 
-The software setup is yet to be determined in detai. It will most likely be some sort of openCV engine to provide 
+The software setup is yet to be determined in detail. It will most likely be some sort of openCV engine to provide 
 control parameter input. These inputs will be mapped to the context of the synthesizer and played by a vvvv patch.
 \footnote{vvvv is a software package, which allows quick data generation, manipulation and output in a node based manner for video, audio and binary formats.}
 
