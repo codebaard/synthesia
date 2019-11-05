@@ -161,4 +161,42 @@ However, the latter solution is the visually more pleasing one. This has to be d
 The hue however should always correspond to a marked area on the floor. By doing so, the user will be able to quickly determine his corresponding shape.
 The saturation of the hue could be used to represent certain states.
 
+\section{Milestones}
+
+\paragraph{1. Milestone: Human Pose Estimation}
+
+The core mechanic of this application is the detection of the users' hands and the seperation of the single participants.
+With Human Pose Estimation achieved by machine learning it is possible to detect multiple skeltons in an image and identify the corresponding hands.
+\begin{flushright}
+    \textbf{Deadline: 20.11.2019}
+\end{flushright}
+
+\paragraph{2. Milestone: Music Engine}
+
+In order to have paramterized instruments, we need a kind of music engine.
+There a two different approaches to achieve this goal:
+\begin{itemize}
+    \item \textbf{Procedural tone generation} Generate tones in realtime based on the parameters.
+    \item \textbf{Blending of prerecorded audio tracks} Blending between different audio tracks based on the parameters.
+\end{itemize}
+\begin{flushright}
+    \textbf{Deadline: 04.12.2019}
+\end{flushright}
+
+\paragraph{3. Server}
+
+A server which takes the coordinates of the human pose estimation and plays the sounds accordingly.
+Filtering the pose estimation results to maintain a stable tracking. Transfering coordinates to frontend.
+\begin{flushright}
+    \textbf{Deadline: 18.12.2019}
+\end{flushright}
+
+\paragraph{4. Graphical User Interface}
+
+Implementing a frontend to visualize the users' interaction.
+
+\begin{flushright}
+    \textbf{Deadline: 05.01.2020}
+\end{flushright}
+
 \end{document}
