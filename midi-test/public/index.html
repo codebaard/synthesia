@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="scripts/socket.io.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <h3>Channel 1</h3>
+    <label for="volume">Volume</label>
+    <input type="range" min="0" max="127" value="100" name="volume" oninput="onChange(this.value, 'volume', 1)">
+
+    <label for="modulation">Modulation</label>
+    <input type="range" min="0" max="127" value="0" name="modulation" oninput="onChange(this.value, 'modulation', 1)">
+    <h3>Channel 2</h3>
+    <label for="volume">Volume</label>
+    <input type="range" min="0" max="127" value="100" name="volume" oninput="onChange(this.value, 'volume', 2)">
+
+    <label for="modulation">Modulation</label>
+    <input type="range" min="0" max="127" value="0" name="modulation" oninput="onChange(this.value, 'modulation', 2)">
+    <h3>Channel 3</h3>
+    <label for="volume">Volume</label>
+    <input type="range" min="0" max="127" value="100" name="volume" oninput="onChange(this.value, 'volume', 3)">
+
+    <label for="modulation">Modulation</label>
+    <input type="range" min="0" max="127" value="0" name="modulation" oninput="onChange(this.value, 'modulation', 3)">
+    <h3>Channel 4</h3>
+    <label for="volume">Volume</label>
+    <input type="range" min="0" max="127" value="100" name="volume" oninput="onChange(this.value, 'volume', 4)">
+
+    <label for="modulation">Modulation</label>
+    <input type="range" min="0" max="127" value="0" name="modulation" oninput="onChange(this.value, 'modulation', 4)">
+
+</body>
+<script>
+    var socket = io('http://localhost:3000');
+    socket.on('connect', function () {
+        socket.emit('hello', 'world');
+    });
+    socket.on('event', function (data) {
+
+    });
+    socket.on('disconnect', function () {
+
+    });
+    function onChange(value, parameter, channel) {
+        socket.emit(parameter, {
+            value, channel
+        });
+    }
+</script>
+
+</html>
