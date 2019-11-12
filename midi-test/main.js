@@ -4,6 +4,14 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const net = require('net');
 
+let ip_address = '127.0.0.1';
+
+// get local ip address
+require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  ip_address = add;
+})
+
+// start tcp server
 net.createServer(function(socket) {
 	socket.write('Echo server\r\n');
     socket.pipe(socket);
@@ -12,7 +20,7 @@ net.createServer(function(socket) {
     socket.on('data', function(data) {
         console.log('DATA ' + socket.remoteAddress + ': ' + data);
     });
-}).listen(3000, '141.22.88.158');
+}).listen(3000, ip_address);
 
 // Webinterface in public
 app.use('/', express.static('public'))
