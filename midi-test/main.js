@@ -38,6 +38,7 @@ var midi = new MidiOutput();
 io.on('connection', client => {
   console.log("connected");
   client.on('volume', ({value, channel}) => {
+    io.emit('unity', {x: value, y: channel})
     midi.setVolume(value, channel)
    });
   client.on('modulation', ({value, channel}) => {
