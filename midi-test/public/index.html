@@ -37,7 +37,7 @@
 
 </body>
 <script>
-    var socket = io('http://localhost:3000');
+    var socket = io('http://localhost:8080');
     socket.on('connect', function () {
         socket.emit('hello', 'world');
     });
