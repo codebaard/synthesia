@@ -5,8 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="scripts/socket.io.js"></script>
-    <title>Document</title>
+    <script src="scripts/socket.io/socket.io.js"></script>
+    <script src="scripts/konva/konva.js"></script>
+    <title>Synthesia Debug</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: #f0f0f0;
+        }
+        #stage-parent {
+            margin: auto;
+            width: 80%;
+            height: 100%;
+        }
+      </style>
 </head>
 
 <body>
@@ -35,6 +49,10 @@
     <label for="modulation">Modulation</label>
     <input type="range" min="0" max="127" value="0" name="modulation" oninput="onChange(this.value, 'modulation', 4)">
 
+    <div id="stage-parent">
+        <div id="container"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 <script>
     var socket = io('http://localhost:8080');

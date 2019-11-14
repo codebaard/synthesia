@@ -25,7 +25,8 @@ net.createServer(function(socket) {
 // Webinterface in public
 app.use('/', express.static('public'))
 // serve socket.io clint from node_modules
-app.use('/scripts', express.static('node_modules/socket.io-client/dist/'))
+app.use('/scripts/socket.io', express.static('node_modules/socket.io-client/dist/'))
+app.use('/scripts/konva', express.static('node_modules/konva/'))
 // start server at port 8080
 server.listen(8080)
 
