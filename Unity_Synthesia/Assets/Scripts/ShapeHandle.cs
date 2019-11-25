@@ -62,6 +62,6 @@ public class ShapeHandle : MonoBehaviour
     void Update()
     {
         _handSpriteRenderer.material.color = Color.Lerp(_handSpriteRenderer.material.color, currentColor, Time.deltaTime * 3f);
-        _handSpriteRenderer.transform.position = Vector3.Lerp(_handSpriteRenderer.transform.position, handPosition, Time.deltaTime * 12f);
+        _handSpriteRenderer.transform.position = Vector3.Lerp(_handSpriteRenderer.transform.position, handPosition, Time.deltaTime * 8f);
     }
 }

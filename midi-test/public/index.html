@@ -24,6 +24,17 @@
 </head>
 
 <body>
+    <h3>Person 1</h3>
+    <label>Left Hand X</label>
+    <input id="p1_lh_x" type="range" min="0" max="1280" value="100">
+    <label for="p1_lh">Left Hand Y</label>
+    <input id="p1_lh_y" type="range" min="0" max="720" value="100">
+
+    <label>Right Hand X</label>
+    <input id="p1_rh_x" type="range" min="0" max="1280" value="100">
+    <label for="p1_lh">Right Hand Y</label>
+    <input id="p1_rh_y" type="range" min="0" max="720" value="100">
+
     <h3>Channel 1</h3>
     <label for="volume">Volume</label>
     <input type="range" min="0" max="127" value="100" name="volume" oninput="onChange(this.value, 'volume', 1)">
@@ -49,9 +60,9 @@
     <label for="modulation">Modulation</label>
     <input type="range" min="0" max="127" value="0" name="modulation" oninput="onChange(this.value, 'modulation', 4)">
 
-    <div id="stage-parent">
+    <!-- <div id="stage-parent">
         <div id="container"></div>
-    </div>
+    </div> -->
     <script src="script.js"></script>
 </body>
 <script>
@@ -70,6 +81,45 @@
             value, channel
         });
     }
+
+    setInterval(() => {
+        
+        var result = {
+            capture_area: {
+                width: 1280,
+                height: 720,
+            },
+            persons: [
+                {
+                    left_hand: {
+                        x: document.getElementById("p1_lh_x").value,
+                        y: document.getElementById("p1_lh_y").value,
+                    },
+                    right_hand: {
+                        x: document.getElementById("p1_rh_x").value,
+                        y: document.getElementById("p1_rh_y").value,
+                    },
+                    root: {
+                        x: 160,
+                        y: 300,
+                    },
+                    left_shoulder: {
+                        x: document.getElementById("p1_rh_x").value,
+                        y: document.getElementById("p1_rh_y").value,
+                    },
+                    right_shoulder: {
+                        x: document.getElementById("p1_rh_x").value,
+                        y: document.getElementById("p1_rh_y").value,
+                    }
+                }
+            ]
+        }
+
+        socket.emit('pose_data', result);
+        console.log(result);
+
+    }, 200);
+
 </script>
 
 </html>
