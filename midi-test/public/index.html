@@ -12,14 +12,17 @@
 <body>
     <h3>Person 1</h3>
     <label>Left Hand X</label>
-    <input id="p1_lh_x" type="range" min="0" max="1280" value="100">
+    <input id="p1_lh_x" type="range" min="160" max="1120" value="100">
     <label for="p1_lh">Left Hand Y</label>
     <input id="p1_lh_y" type="range" min="0" max="720" value="100">
 
     <label>Right Hand X</label>
-    <input id="p1_rh_x" type="range" min="0" max="1280" value="100">
+    <input id="p1_rh_x" type="range" min="160" max="1120" value="100">
     <label for="p1_lh">Right Hand Y</label>
     <input id="p1_rh_y" type="range" min="0" max="720" value="100">
+
+    <label>Root X</label>
+    <input id="p1_r_x" type="range" min="160" max="1120" value="180">
 
     <h3>Channel 1</h3>
     <label for="volume">Volume</label>
@@ -48,7 +51,7 @@
 
 </body>
 <script>
-    var socket = io('http://localhost:8080');
+    var socket = io('http://141.22.69.73:8080');
     socket.on('connect', function () {
         socket.emit('hello', 'world');
     });
@@ -73,34 +76,31 @@
             },
             persons: [
                 {
-                    left_hand: {
-                        x: document.getElementById("p1_lh_x").value,
-                        y: document.getElementById("p1_lh_y").value,
-                    },
-                    right_hand: {
-                        x: document.getElementById("p1_rh_x").value,
-                        y: document.getElementById("p1_rh_y").value,
-                    },
-                    root: {
-                        x: 160,
-                        y: 300,
-                    },
-                    left_shoulder: {
-                        x: document.getElementById("p1_rh_x").value,
-                        y: document.getElementById("p1_rh_y").value,
-                    },
-                    right_shoulder: {
-                        x: document.getElementById("p1_rh_x").value,
-                        y: document.getElementById("p1_rh_y").value,
-                    }
+                    keypoints: [
+                        {
+                            keypoint: "left_hand",
+                            x: document.getElementById("p1_lh_x").value,
+                            y: document.getElementById("p1_lh_y").value,
+                        },
+                        {
+                            keypoint: "right_hand",
+                            x: document.getElementById("p1_rh_x").value,
+                            y: document.getElementById("p1_rh_y").value,
+                        },
+                        {
+                            keypoint: "root",
+                            x: document.getElementById("p1_r_x").value,
+                            y: 300,
+                        },
+                    ]
                 }
             ]
         }
 
         socket.emit('pose_data', result);
-        console.log(result);
+        //console.log(result);
 
-    }, 200);
+    }, 1);
 
 </script>
 

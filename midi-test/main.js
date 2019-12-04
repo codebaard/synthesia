@@ -15,15 +15,22 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 // start tcp server
 net.createServer(function (socket) {
   socket.write('Echo server\r\n');
-  socket.pipe(socket);
+  //socket.pipe(socket);
 
   // Add a 'data' event handler to this instance of socket
   socket.on('data', function (data) {
-    console.log('DATA ' + socket.remoteAddress + ': ' + data);
-    const unity_data = ConvertPoseData(data);
-    io.emit('unity_pose_data', unity_data);
+    //console.log('DATA ' + socket.remoteAddress + ': ' + data);
+    try {
+      const dataString = data.toString();
+      const jsonObject = JSON.parse(dataString);
+      const unity_data = ConvertPoseData(jsonObject);
+      io.emit('unity_pose_data', unity_data);
+    } catch (error) {
+      console.log("exception");
+      console.log("continue...");
+    }
   });
-}).listen(3000, ip_address);
+}).listen(3000, "141.22.69.73");
 
 console.log('TCP Server at: ' + ip_address + ':' + 3000);
 
@@ -51,26 +58,33 @@ io.on('connection', client => {
     midi.setModulation(value, channel)
   });
   client.on('pose_data', (data) => {
-    const unity_data = ConvertPoseData(data);
-    io.emit('unity_pose_data', unity_data);
+    //console.log(data);
+    // const unity_data = ConvertPoseData(data);
+    // io.emit('unity_pose_data', unity_data);
   })
 });
 
 function ConvertPoseData(pose_data) {
 
-  const { width, height } = pose_data.capture_area;
+  //const { width, height } = pose_data.capture_area;
+  const width = 960;
+  const height = 720;
 
   let lanes = [
     {
+      active: false,
       person: null
     },
     {
+      active: false,
       person: null
     },
     {
+      active: false,
       person: null
     },
     {
+      active: false,
       person: null
     },
   ]
@@ -79,22 +93,38 @@ function ConvertPoseData(pose_data) {
   // TODO: filter persons by z rotation (shoulder difference)
 
   pose_data.persons.forEach(person => {
-    const { lane_number, difference } = getLane(person.root.x, width);
-    if (lanes[lane_number].person === null) {
-      lanes[lane_number].person = person;
-      lanes[lane_number].difference = difference;
-    } else {
-      current_difference = lanes[lane_number].difference;
-      if (difference < current_difference) {
-        lanes[lane_number].person = person;
-        lanes[lane_number].difference = difference;
+    person.keypoints.forEach(keypointElement => {
+      keypointElement.x = 1280 - keypointElement.x
+    });
+    let root;
+    if (person.keypoints.length > 0) {
+      person.keypoints.forEach(element => {
+        if (element.keypoint == "root") {
+          root = element;
+        }
+      });
+      const { lane_number, difference } = getLane(root.x, width, 160);
+      if (lane_number >= 0 && lane_number < 4) {
+        if (lanes[lane_number].person === null) {
+          lanes[lane_number].person = person;
+          lanes[lane_number].difference = difference;
+          lanes[lane_number].active = true;
+        } else {
+          current_difference = lanes[lane_number].difference;
+          if (difference < current_difference) {
+            lanes[lane_number].person = person;
+            lanes[lane_number].difference = difference;
+            lanes[lane_number].active = true;
+          }
+        }
       }
     }
   });
 
   lanes = lanes.map((lane, index) => {
     return {
-      person: PersonToLocalLane(lane.person, index, {width: width / 4, height })
+      active: lane.active,
+      person: lane.person != null ? PersonToLocalLane(lane.person, index, { width: width / 4, height }) : null
     }
   })
 
@@ -105,28 +135,29 @@ function ConvertPoseData(pose_data) {
 }
 
 function PersonToLocalLane(person, lane_number, lane_size) {
-  for (var key in person) {
-    if (person.hasOwnProperty(key)) {
-      person[key] = PositionToLocalLanePosition(person[key], lane_number, lane_size);
-    }
+  for (let index = 0; index < person.keypoints.length; index++) {
+    person.keypoints[index] = PositionToLocalLanePosition(person.keypoints[index], lane_number, lane_size);
   }
   return person;
 }
 
-function PositionToLocalLanePosition(position, lane_number, lane_size) {
-  const offset_x = lane_size.width * lane_number;
-  const offset_y = lane_size.height * lane_number;
+function PositionToLocalLanePosition(keypoint, lane_number, lane_size, offset = 160) {
+  const lane_start_x = offset + lane_size.width * lane_number;
   return {
-    x: (position.x - offset_x) / lane_size.width,
-    y: (position.y - offset_y) / lane_size.height,
+    keypoint: keypoint.keypoint,
+    x: (keypoint.x - lane_start_x) / lane_size.width,
+    y: (lane_size.height - keypoint.y) / lane_size.height,
   }
 }
 
-function getLane(x, width, number_of_lanes = 4) {
+function getLane(x, width, offset = 160, number_of_lanes = 4) {
   const lane_width = width / number_of_lanes;
-  const lane_number = Math.floor(x / lane_width);
+  const lane_number = Math.floor((x - offset) / lane_width);
 
-  const difference = (x % lane_width - (lane_width / 2)) / (lane_width / 2);
+  const lane_middle = (n) => {
+    return offset + (n * lane_width) + (lane_width / 2);
+  }
+  const difference = lane_middle(lane_number) - x;
 
   return {
     lane_number,
