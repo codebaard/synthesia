@@ -15,9 +15,12 @@ public class ShapeHandle : MonoBehaviour
 
     private Color currentColor = new Color(1f,1f,1f,1f);
 
+    private VisualShape ParentShape;
+
     // Start is called before the first frame update
     void Start()
     {
+        ParentShape = GetComponentInParent<VisualShape>();
         boundaries = new Vector3[4];
         Lane.GetWorldCorners(boundaries);
         _handSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -50,8 +53,8 @@ public class ShapeHandle : MonoBehaviour
     }
 
     public void SetHandPosition(Vector3 newHandPosition) {
-        if (_isPositionInLane(newHandPosition)) {
-            handPosition = newHandPosition;
+        if (_isPositionInLane(newHandPosition + ParentShape.transform.position)) {
+            handPosition = newHandPosition + ParentShape.transform.position;
             currentColor = new Color(1f,1f,1f,1f);
         } else {
             currentColor = new Color(0f,0f,0f,0.2f);

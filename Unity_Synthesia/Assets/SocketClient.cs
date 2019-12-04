@@ -8,8 +8,14 @@ public class SocketClient : MonoBehaviour
 {
 
     SocketIOComponent socket;
+    public Lane[] uiLanes;
     public ShapeHandle leftHandle;
     public ShapeHandle rightHandle;
+    public ShapeHandle bassHandle;
+    public ShapeHandle leftTriHandle;
+    public ShapeHandle rightTriHandle;
+    public ShapeHandle leftStarHandle;
+    public ShapeHandle rightStarHandle;
 
     // Start is called before the first frame update
     void Start()
@@ -19,16 +25,41 @@ public class SocketClient : MonoBehaviour
         socket.On("unity_pose_data", (SocketIOEvent e) =>
         {
             List<JSONObject> lanes = e.data["lanes"].list;
-            JSONObject personInLane1 = lanes[0]["person"];
-            Debug.Log(personInLane1);
-            float x, y;
-            x = personInLane1["left_hand"]["x"].f.Remap(0, 1, -8.7f, -4.5f);
-            y = personInLane1["left_hand"]["y"].f.Remap(0, 1, -4.7f, 4.7f);
-            leftHandle.SetHandPosition(new Vector3(x, y, 0));
+            for(int i = 0; i < lanes.Count; i++) {
+                if (uiLanes.Length > i) {
+                    if (lanes[i]["active"].b) {
+                        uiLanes[i].Activate();
+                        JSONObject personInLane = lanes[i]["person"];
+                        List<JSONObject> keypoints = personInLane["keypoints"].list;
+                        float xLeft, yLeft;
+                        xLeft = keypoints[1]["x"].f.Remap(0, 1, -8.7f, -4.5f);
+                        yLeft = keypoints[1]["y"].f.Remap(0, 1, -4.7f, 4.7f);
+                        float xRight, yRight;
+                        xRight = keypoints[0]["x"].f.Remap(0, 1, -8.7f, -4.5f);
+                        yRight = keypoints[0]["y"].f.Remap(0, 1, -4.7f, 4.7f);
 
-            x = personInLane1["right_hand"]["x"].f.Remap(0, 1, -8.7f, -4.5f);
-            y = personInLane1["right_hand"]["y"].f.Remap(0, 1, -4.7f, 4.7f);
-            rightHandle.SetHandPosition(new Vector3(x, y, 0));
+                        Vector3 LeftPos = new Vector3(xLeft, yLeft, 0);
+                        Vector3 RightPos = new Vector3(xRight, yRight, 0);
+
+                        if (i == 0) {
+                            leftHandle.SetHandPosition(LeftPos);
+                            rightHandle.SetHandPosition(RightPos);
+                        } else if (i == 1) {
+                            bassHandle.SetHandPosition(RightPos);
+                        } else if (i == 2) {
+                            leftTriHandle.SetHandPosition(LeftPos);
+                            rightTriHandle.SetHandPosition(RightPos);
+                        } else if (i == 3) {
+                            leftStarHandle.SetHandPosition(LeftPos);
+                            rightStarHandle.SetHandPosition(RightPos);
+                        }
+                        
+                    } else {
+                        uiLanes[i].Deactivate();
+                        Debug.Log("not active");
+                    }
+                }
+            }
         });
     }
 }
