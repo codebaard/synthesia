@@ -3,6 +3,7 @@ const app = express()
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const net = require('net');
+const fs = require('fs');
 
 let ip_address = '127.0.0.1';
 
@@ -12,6 +13,8 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   console.log('host ip: ' + add);
 })
 
+let temp = "";
+
 // start tcp server
 net.createServer(function (socket) {
   socket.write('Echo server\r\n');
@@ -20,17 +23,25 @@ net.createServer(function (socket) {
   // Add a 'data' event handler to this instance of socket
   socket.on('data', function (data) {
     //console.log('DATA ' + socket.remoteAddress + ': ' + data);
+    temp += data.toString();
     try {
-      const dataString = data.toString();
+      const receivedAt = Date.now();
+      logInfo("Received data at: " + receivedAt);
+      const dataString = temp;
       const jsonObject = JSON.parse(dataString);
+      const sentTime = new Date(jsonObject.Timestamp.Timestamp);
+      logInfo("Data sent at: " + sentTime)
+      logInfo("Time for receiving data: " + (Date.now() - sentTime) + "ms")
       const unity_data = ConvertPoseData(jsonObject);
       io.emit('unity_pose_data', unity_data);
+      logInfo("Time for processing: " + (Date.now() - receivedAt) + "ms");
+      temp = "";
     } catch (error) {
-      console.log("exception");
-      console.log("continue...");
+      logError(error);
+      logError(data.toString());
     }
   });
-}).listen(3000, "141.22.69.73");
+}).listen(3000, "141.22.72.134");
 
 console.log('TCP Server at: ' + ip_address + ':' + 3000);
 
@@ -164,3 +175,18 @@ function getLane(x, width, offset = 160, number_of_lanes = 4) {
     difference
   }
 }
+
+
+function logInfo(message) {
+  fs.appendFile("info.log", message + "\r\n", () => {});
+}
+
+function logError(message) {
+  fs.appendFile("error.log", message + "\r\n", () => {});
+}
+
+logInfo("-------------------------");
+logInfo("");
+logInfo("-------------------------");
+logInfo("**** Started Server ****");
+logInfo("Started at: " + Date.now());
