@@ -22,26 +22,27 @@ net.createServer(function (socket) {
 
   // Add a 'data' event handler to this instance of socket
   socket.on('data', function (data) {
+    logInfo("Received:\n" +  data);
     //console.log('DATA ' + socket.remoteAddress + ': ' + data);
     temp += data.toString();
     try {
-      const receivedAt = Date.now();
-      logInfo("Received data at: " + receivedAt);
       const dataString = temp;
       const jsonObject = JSON.parse(dataString);
-      const sentTime = new Date(jsonObject.Timestamp.Timestamp);
-      logInfo("Data sent at: " + sentTime)
-      logInfo("Time for receiving data: " + (Date.now() - sentTime) + "ms")
-      const unity_data = ConvertPoseData(jsonObject);
-      io.emit('unity_pose_data', unity_data);
-      logInfo("Time for processing: " + (Date.now() - receivedAt) + "ms");
+      //const sentTime = new Date(jsonObject.Timestamp.Timestamp);
+      //logInfo("Data sent at: " + sentTime)
+      //logInfo("Time for receiving data: " + (Date.now() - sentTime) + "ms")
+        const unity_data = ConvertPoseData(jsonObject);
+        io.emit('unity_pose_data', unity_data);
+        logInfo("Emitted to Unity: \n" + JSON.stringify(unity_data));
+      
       temp = "";
     } catch (error) {
+      logError("error: ");
       logError(error);
-      logError(data.toString());
+      logError("current string:" + data.toString());
     }
   });
-}).listen(3000, "141.22.72.134");
+}).listen(3000, "192.168.0.101");
 
 console.log('TCP Server at: ' + ip_address + ':' + 3000);
 
@@ -77,9 +78,10 @@ io.on('connection', client => {
 
 function ConvertPoseData(pose_data) {
 
-  //const { width, height } = pose_data.capture_area;
-  const width = 960;
-  const height = 720;
+  const width = pose_data.CaptureArea.widthPoseData;
+  const height = pose_data.CaptureArea.heightPoseData;
+
+  const fullWidth = pose_data.CaptureArea.widthColorFrame
 
   let lanes = [
     {
@@ -103,18 +105,10 @@ function ConvertPoseData(pose_data) {
   // TODO: filter persons by z distance (y value)
   // TODO: filter persons by z rotation (shoulder difference)
 
-  pose_data.persons.forEach(person => {
-    person.keypoints.forEach(keypointElement => {
-      keypointElement.x = 1280 - keypointElement.x
-    });
-    let root;
-    if (person.keypoints.length > 0) {
-      person.keypoints.forEach(element => {
-        if (element.keypoint == "root") {
-          root = element;
-        }
-      });
-      const { lane_number, difference } = getLane(root.x, width, 160);
+  pose_data.Persons.forEach(person => {
+    if (person.PoseData.length > 0) {
+      const root = person.PoseData[1];
+      const { lane_number, difference } = getLane(root, width, (fullWidth - width) / 2);
       if (lane_number >= 0 && lane_number < 4) {
         if (lanes[lane_number].person === null) {
           lanes[lane_number].person = person;
@@ -135,7 +129,7 @@ function ConvertPoseData(pose_data) {
   lanes = lanes.map((lane, index) => {
     return {
       active: lane.active,
-      person: lane.person != null ? PersonToLocalLane(lane.person, index, { width: width / 4, height }) : null
+      person: lane.person != null ? PersonToLocalLane(lane.person, index, { width: width / 4, height }, (fullWidth - width) / 2) : null
     }
   })
 
@@ -145,9 +139,9 @@ function ConvertPoseData(pose_data) {
 
 }
 
-function PersonToLocalLane(person, lane_number, lane_size) {
-  for (let index = 0; index < person.keypoints.length; index++) {
-    person.keypoints[index] = PositionToLocalLanePosition(person.keypoints[index], lane_number, lane_size);
+function PersonToLocalLane(person, lane_number, lane_size, offset) {
+  for (let index = 0; index < person.PoseData.length; index++) {
+    person.PoseData[index] = PositionToLocalLanePosition(person.PoseData[index], lane_number, lane_size, offset);
   }
   return person;
 }
@@ -155,24 +149,32 @@ function PersonToLocalLane(person, lane_number, lane_size) {
 function PositionToLocalLanePosition(keypoint, lane_number, lane_size, offset = 160) {
   const lane_start_x = offset + lane_size.width * lane_number;
   return {
-    keypoint: keypoint.keypoint,
+    index: keypoint.index,
     x: (keypoint.x - lane_start_x) / lane_size.width,
     y: (lane_size.height - keypoint.y) / lane_size.height,
+    z: keypoint.z
   }
 }
 
-function getLane(x, width, offset = 160, number_of_lanes = 4) {
-  const lane_width = width / number_of_lanes;
-  const lane_number = Math.floor((x - offset) / lane_width);
+function getLane(bone, width, offset = 160, number_of_lanes = 4) {
+  if (bone.z > 2 && bone.z < 4) {
 
-  const lane_middle = (n) => {
-    return offset + (n * lane_width) + (lane_width / 2);
+    const lane_width = width / number_of_lanes;
+    const lane_number = Math.floor((bone.x - offset) / lane_width);
+    
+    const lane_middle = (n) => {
+      return offset + (n * lane_width) + (lane_width / 2);
+    }
+    const difference = lane_middle(lane_number) - bone.x;
+    
+    return {
+      lane_number,
+      difference
+    }
   }
-  const difference = lane_middle(lane_number) - x;
-
   return {
-    lane_number,
-    difference
+    lane_number: -1,
+    difference: 0
   }
 }
 

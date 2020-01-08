@@ -24,19 +24,20 @@ public class SocketClient : MonoBehaviour
         socket = go.GetComponent<SocketIOComponent>();
         socket.On("unity_pose_data", (SocketIOEvent e) =>
         {
+            Debug.Log(e.data.ToString());
             List<JSONObject> lanes = e.data["lanes"].list;
             for(int i = 0; i < lanes.Count; i++) {
                 if (uiLanes.Length > i) {
                     if (lanes[i]["active"].b) {
                         uiLanes[i].Activate();
                         JSONObject personInLane = lanes[i]["person"];
-                        List<JSONObject> keypoints = personInLane["keypoints"].list;
+                        List<JSONObject> keypoints = personInLane["PoseData"].list;
                         float xLeft, yLeft;
-                        xLeft = keypoints[1]["x"].f.Remap(0, 1, -8.7f, -4.5f);
-                        yLeft = keypoints[1]["y"].f.Remap(0, 1, -4.7f, 4.7f);
+                        xLeft = keypoints[7]["x"].f.Remap(0, 1, -8.7f, -4.5f);
+                        yLeft = keypoints[7]["y"].f.Remap(0, 1, -4.7f, 4.7f);
                         float xRight, yRight;
-                        xRight = keypoints[0]["x"].f.Remap(0, 1, -8.7f, -4.5f);
-                        yRight = keypoints[0]["y"].f.Remap(0, 1, -4.7f, 4.7f);
+                        xRight = keypoints[11]["x"].f.Remap(0, 1, -8.7f, -4.5f);
+                        yRight = keypoints[11]["y"].f.Remap(0, 1, -4.7f, 4.7f);
 
                         Vector3 LeftPos = new Vector3(xLeft, yLeft, 0);
                         Vector3 RightPos = new Vector3(xRight, yRight, 0);
@@ -56,7 +57,6 @@ public class SocketClient : MonoBehaviour
                         
                     } else {
                         uiLanes[i].Deactivate();
-                        Debug.Log("not active");
                     }
                 }
             }
