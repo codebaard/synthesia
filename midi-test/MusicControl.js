@@ -21,7 +21,6 @@ class MusicControl {
                 this.midi.sendMessage([176, 13, 127])
                 break;
             default:
-                console.log("Bass Track is not available")
                 break;
         }
     }
@@ -41,7 +40,6 @@ class MusicControl {
                 this.midi.sendMessage([176, 17, 127])
                 break;
             default:
-                console.log("Bass Track is not available")
                 break;
         }
     }
@@ -117,4 +115,4 @@ class MusicControl {
 module.exports = MusicControl;
 
 // let control = new MusicControl()
-// control.setBassTrack(1);
+// control.setDrumTrack(1);

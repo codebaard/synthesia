@@ -10,6 +10,7 @@ class MidiOutput {
         
         // Get the name of a specified output port.
         this.midiOut.getPortName(0);
+        console.log(`Midi: connected to ${this.midiOut.getPortName(0)}`);
 
         // Open the first available output port.
         this.midiOut.openPort(0);

@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, { wsEngine: 'ws' });
 const net = require('net');
 const fs = require('fs');
 
@@ -37,7 +37,6 @@ net.createServer(function (socket) {
       temp = "";
       controlMusic(unity_data)
     } catch (error) {
-      logError("current validation:" + temp);
       logError("error: ");
       logError(error);
       logError("current string:" + data.toString());
@@ -56,6 +55,15 @@ app.use('/scripts/konva', express.static('node_modules/konva/'))
 server.listen(8080)
 
 console.log("Webinterface available at http://localhost:8080/")
+
+const MidiInput = require('./MidiInput');
+var midiin = new MidiInput();
+
+midiin.onBarChange((bar) => {
+  console.log(bar);
+  
+  //io.emit('bar', {bar: bar});
+})
 
 const MusicControl = require('./MusicControl.js');
 
@@ -193,6 +201,7 @@ function ConvertPoseData(pose_data) {
   })
 
   return {
+    bar: midiin.bar,
     lanes
   }
 
