@@ -56,7 +56,7 @@ server.listen(8080)
 
 console.log("Webinterface available at http://localhost:8080/")
 
-const MidiOutput = require('./midi.js');
+const MidiOutput = require('./MidiOutput.js/index.js');
 
 var midi = new MidiOutput();
 
