@@ -17,6 +17,8 @@ public class SocketClient : MonoBehaviour
     public ShapeHandle leftStarHandle;
     public ShapeHandle rightStarHandle;
 
+    public BarIndicator barIndicator;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +26,9 @@ public class SocketClient : MonoBehaviour
         socket = go.GetComponent<SocketIOComponent>();
         socket.On("unity_pose_data", (SocketIOEvent e) =>
         {
-            Debug.Log(e.data.ToString());
+            //Debug.Log(e.data.ToString());
+            float bar = e.data["bar"].n;
+            barIndicator.setBar(bar);
             List<JSONObject> lanes = e.data["lanes"].list;
             for(int i = 0; i < lanes.Count; i++) {
                 if (uiLanes.Length > i) {
@@ -34,10 +38,10 @@ public class SocketClient : MonoBehaviour
                         List<JSONObject> keypoints = personInLane["PoseData"].list;
                         float xLeft, yLeft;
                         xLeft = keypoints[7]["x"].f.Remap(0, 1, -8.7f, -4.5f);
-                        yLeft = keypoints[7]["y"].f.Remap(0, 1, -4.7f, 4.7f);
+                        yLeft = keypoints[7]["y"].f.Remap(0, 1, -4.7f, 3.7f);
                         float xRight, yRight;
                         xRight = keypoints[11]["x"].f.Remap(0, 1, -8.7f, -4.5f);
-                        yRight = keypoints[11]["y"].f.Remap(0, 1, -4.7f, 4.7f);
+                        yRight = keypoints[11]["y"].f.Remap(0, 1, -4.7f, 3.7f);
 
                         Vector3 LeftPos = new Vector3(xLeft, yLeft, 0);
                         Vector3 RightPos = new Vector3(xRight, yRight, 0);
