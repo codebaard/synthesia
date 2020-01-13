@@ -26,23 +26,24 @@ net.createServer(function (socket) {
     //console.log('DATA ' + socket.remoteAddress + ': ' + data);
     temp += data.toString();
     try {
-      const dataString = temp;
+      const dataString = data.toString();
       const jsonObject = JSON.parse(dataString);
       //const sentTime = new Date(jsonObject.Timestamp.Timestamp);
       //logInfo("Data sent at: " + sentTime)
       //logInfo("Time for receiving data: " + (Date.now() - sentTime) + "ms")
-        const unity_data = ConvertPoseData(jsonObject);
-        io.emit('unity_pose_data', unity_data);
-        logInfo("Emitted to Unity: \n" + JSON.stringify(unity_data));
-      
+      const unity_data = ConvertPoseData(jsonObject);
+      io.emit('unity_pose_data', unity_data);
+      logInfo("Emitted to Unity: \n" + JSON.stringify(unity_data));
       temp = "";
+      controlMusic(unity_data)
     } catch (error) {
+      logError("current validation:" + temp);
       logError("error: ");
       logError(error);
       logError("current string:" + data.toString());
     }
   });
-}).listen(3000, "192.168.0.101");
+}).listen(3000, "141.22.75.201");
 
 console.log('TCP Server at: ' + ip_address + ':' + 3000);
 
@@ -56,9 +57,67 @@ server.listen(8080)
 
 console.log("Webinterface available at http://localhost:8080/")
 
-const MidiOutput = require('./MidiOutput.js/index.js');
+const MusicControl = require('./MusicControl.js');
 
-var midi = new MidiOutput();
+var musicControl = new MusicControl();
+
+function controlMusic(data) {
+  if (data.lanes[0].active) {
+    musicControl.unmuteDrums()
+    let leftHand = data.lanes[0].person.PoseData[7];
+    let rightHand = data.lanes[0].person.PoseData[11];
+    let drumTrack = Math.ceil(leftHand.y * 4)
+    musicControl.setDrumTrack(drumTrack)
+    let speed = Math.abs(leftHand.x - rightHand.x) * 127
+    musicControl.setBPM(speed)
+  } else {
+    musicControl.setBPM(64);
+    musicControl.muteDrums()
+  }
+  if (data.lanes[1].active) {
+    musicControl.unmuteBass()
+    let rightHand = data.lanes[1].person.PoseData[11];
+    let bassTrack = Math.ceil(rightHand.y * 4)
+    musicControl.setBassTrack(bassTrack)
+    let cutoff = rightHand.x * 127;
+    musicControl.setBassFilterCutoff(cutoff)
+  } else {
+    musicControl.muteBass()
+  }
+  if (data.lanes[2].active) {
+    let leftHand = data.lanes[2].person.PoseData[7];
+    let rightHand = data.lanes[2].person.PoseData[11];
+    let rate = Math.abs(leftHand.y - rightHand.y) * 127
+    musicControl.setSynthRate(rate)
+    let step = leftHand.x * 127;
+    musicControl.setSynthStep(step)
+    let distance = rightHand.x * 127;
+    musicControl.setSynthDistance(distance)
+
+  } else {
+    musicControl.setSynthRate(40)
+    musicControl.setSynthStep(100)
+    musicControl.setSynthDistance(70)
+  }
+  if (data.lanes[3].active) {
+    let leftHand = data.lanes[3].person.PoseData[7];
+    let rightHand = data.lanes[3].person.PoseData[11];
+
+    let cutoff = Math.abs(leftHand.x - rightHand.x) * 127
+    musicControl.setSynthFilterCutoff(cutoff)
+    let curve = leftHand.y * 127
+    musicControl.setSynthFilterCurve(curve)
+    
+  } else {
+    musicControl.setSynthFilterCutoff(80)
+  }
+
+  if (!data.lanes[2].active && !data.lanes[3].active) {
+    musicControl.muteSynth();
+  } else {
+    musicControl.unmuteSynth();
+  }
+}
 
 io.on('connection', client => {
   console.log("connected");
@@ -108,7 +167,7 @@ function ConvertPoseData(pose_data) {
   pose_data.Persons.forEach(person => {
     if (person.PoseData.length > 0) {
       const root = person.PoseData[1];
-      const { lane_number, difference } = getLane(root, width, (fullWidth - width) / 2);
+      let { lane_number, difference } = getLane(root, width, (fullWidth - width) / 2);
       if (lane_number >= 0 && lane_number < 4) {
         if (lanes[lane_number].person === null) {
           lanes[lane_number].person = person;
@@ -148,10 +207,12 @@ function PersonToLocalLane(person, lane_number, lane_size, offset) {
 
 function PositionToLocalLanePosition(keypoint, lane_number, lane_size, offset = 160) {
   const lane_start_x = offset + lane_size.width * lane_number;
+  //let y = (lane_size.height - keypoint.y) / lane_size.height;
+  let y = ((lane_size.height - keypoint.y) - 320) / 520
   return {
     index: keypoint.index,
     x: (keypoint.x - lane_start_x) / lane_size.width,
-    y: (lane_size.height - keypoint.y) / lane_size.height,
+    y: y,
     z: keypoint.z
   }
 }
