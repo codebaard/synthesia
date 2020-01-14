@@ -6,7 +6,7 @@ public class ShapeHandle : MonoBehaviour
 {
 
     public RectTransform Lane;
-
+    public Color OutOfLaneColor = new Color(0f,0f,0f,0.8f);
     private Vector3 handPosition;
 
     private SpriteRenderer _handSpriteRenderer;
@@ -53,11 +53,11 @@ public class ShapeHandle : MonoBehaviour
     }
 
     public void SetHandPosition(Vector3 newHandPosition) {
+        handPosition = newHandPosition + ParentShape.transform.position;
         if (_isPositionInLane(newHandPosition + ParentShape.transform.position)) {
-            handPosition = newHandPosition + ParentShape.transform.position;
             currentColor = new Color(1f,1f,1f,1f);
         } else {
-            currentColor = new Color(0f,0f,0f,0.2f);
+            currentColor = OutOfLaneColor;
         }
     }
 

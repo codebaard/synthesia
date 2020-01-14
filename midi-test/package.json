@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "csv-write-stream": "^2.0.0",
+    "csv-writer": "^1.5.0",
     "express": "^4.17.1",
     "konva": "^4.0.17",
     "midi": "^1.0.0",

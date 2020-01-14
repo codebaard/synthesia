@@ -4,21 +4,27 @@ class MusicControl {
 
     constructor() {
         this.midi = new MidiOutput()
+        this.selectedDrumTrack = 1;
+        this.selectedBassTrack = 1;
     }
 
     setDrumTrack(track) {
         switch (track) {
             case 1:
                 this.midi.sendMessage([176, 10, 127])
+                this.selectedDrumTrack = 1;
                 break;
             case 2:
                 this.midi.sendMessage([176, 11, 127])
+                this.selectedDrumTrack = 2;
                 break;
             case 3:
                 this.midi.sendMessage([176, 12, 127])
+                this.selectedDrumTrack = 3;
                 break;
             case 4:
                 this.midi.sendMessage([176, 13, 127])
+                this.selectedDrumTrack = 4;
                 break;
             default:
                 break;
@@ -29,15 +35,19 @@ class MusicControl {
         switch (track) {
             case 1:
                 this.midi.sendMessage([176, 14, 127])
+                this.selectedBassTrack = 1;
                 break;
             case 2:
                 this.midi.sendMessage([176, 15, 127])
+                this.selectedBassTrack = 2;
                 break;
             case 3:
                 this.midi.sendMessage([176, 16, 127])
+                this.selectedBassTrack = 3;
                 break;
             case 4:
                 this.midi.sendMessage([176, 17, 127])
+                this.selectedBassTrack = 4;
                 break;
             default:
                 break;
@@ -115,4 +125,4 @@ class MusicControl {
 module.exports = MusicControl;
 
 // let control = new MusicControl()
-// control.setDrumTrack(1);
+// control.setBassTrack(4);
