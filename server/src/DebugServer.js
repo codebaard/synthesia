@@ -28,6 +28,7 @@ class DebugServer {
                 heightColorFrame: 1080,
             },
             Persons: [
+                this.getRandomPersonData(),
                 this.getRandomPersonData()
             ]
         }
@@ -35,24 +36,12 @@ class DebugServer {
     }
 
     getRandomPersonData() {
+        let keypoints = [];
+        for (let index = 0; index < 25; index++) {
+            keypoints.push(this.getRandomKeypoint(index));
+        }
         const person = {
-            PoseData: [
-                this.getRandomKeypoint(0),
-                this.getRandomKeypoint(1),
-                this.getRandomKeypoint(2),
-                this.getRandomKeypoint(3),
-                this.getRandomKeypoint(4),
-                this.getRandomKeypoint(5),
-                this.getRandomKeypoint(6),
-                this.getRandomKeypoint(7),
-                this.getRandomKeypoint(8),
-                this.getRandomKeypoint(9),
-                this.getRandomKeypoint(10),
-                this.getRandomKeypoint(11),
-                this.getRandomKeypoint(12),
-                this.getRandomKeypoint(13),
-                this.getRandomKeypoint(14)
-            ]
+            PoseData: keypoints
         }
         return person;
     }
