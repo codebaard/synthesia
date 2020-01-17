@@ -5162,7 +5162,7 @@ Transform:
   - {fileID: 423371943}
   - {fileID: 1276809486}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &102145052
 MonoBehaviour:
@@ -5423,7 +5423,7 @@ Transform:
   - {fileID: 1652782997}
   - {fileID: 1232331638}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &295739735
 GameObject:
@@ -16290,7 +16290,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &992984706
 PrefabInstance:
@@ -16333,7 +16333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -16849,7 +16849,7 @@ Transform:
   - {fileID: 1875437987}
   - {fileID: 1325685211}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1215808765
 GameObject:
@@ -21978,7 +21978,7 @@ Transform:
   - {fileID: 1998730535}
   - {fileID: 1657510753}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1363404758
 MonoBehaviour:
@@ -22295,7 +22295,7 @@ RectTransform:
   - {fileID: 1548150039}
   - {fileID: 1174518660}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -22925,7 +22925,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1795414088}
   - component: {fileID: 1795414089}
-  - component: {fileID: 1795414090}
   m_Layer: 0
   m_Name: WebSocket
   m_TagString: Untagged
@@ -22945,7 +22944,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1795414089
 MonoBehaviour:
@@ -22979,18 +22978,6 @@ MonoBehaviour:
   BassBarIndicator: {fileID: 1174518661}
   DrumTrackManager: {fileID: 866893966}
   BassTrackManager: {fileID: 405792733}
---- !u!114 &1795414090
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795414087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f5923ab5b49e4b4e895cad669baaa57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1823845240
 GameObject:
   m_ObjectHideFlags: 0
