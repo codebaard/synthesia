@@ -58,11 +58,12 @@ class DebugServer {
     }
 
     getRandomKeypoint(index) {
-        const keypoint = {
-            index: index,
-            x: 400,
-            y: 500,
-            z: 3
+        if (index == 7) {
+            keypoint.x = 400
+            keypoint.y = 400
+        } else if (index == 11) {
+            keypoint.x = 600
+            keypoint.y = 700
         }
         return keypoint;
     }
