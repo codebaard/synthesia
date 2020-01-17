@@ -40,12 +40,6 @@ writeStream.write(csvStringifier.getHeaderString());
 
 let ip_address = '127.0.0.1';
 
-// get local ip address
-require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-  ip_address = add;
-  console.log('host ip: ' + add);
-})
-
 let temp = "";
 
 // start tcp server
@@ -78,19 +72,9 @@ net.createServer(function (socket) {
       //logError("current string:" + data.toString());
     }
   });
-}).listen(3000, "141.22.75.201");
+}).listen(3000, ip_address);
 
 console.log('TCP Server at: ' + ip_address + ':' + 3000);
-
-// Webinterface in public
-app.use('/', express.static('public'))
-// serve socket.io clint from node_modules
-app.use('/scripts/socket.io', express.static('node_modules/socket.io-client/dist/'))
-app.use('/scripts/konva', express.static('node_modules/konva/'))
-// start server at port 8080
-server.listen(8080)
-
-console.log("Webinterface available at http://localhost:8080/")
 
 const MidiInput = require('./MidiInput');
 var midiin = new MidiInput()
@@ -182,22 +166,6 @@ function saveToCSV(unity_object, raw_data) {
   csvObject["player_count"] = playerCount;
   writeStream.write(csvStringifier.stringifyRecords([csvObject]));
 }
-
-io.on('connection', client => {
-  console.log("connected");
-  client.on('volume', ({ value, channel }) => {
-    io.emit('unity', { x: value, y: channel })
-    midi.setVolume(value, channel)
-  });
-  client.on('modulation', ({ value, channel }) => {
-    midi.setModulation(value, channel)
-  });
-  client.on('pose_data', (data) => {
-    //console.log(data);
-    // const unity_data = ConvertPoseData(data);
-    // io.emit('unity_pose_data', unity_data);
-  })
-});
 
 function ConvertPoseData(pose_data) {
 
