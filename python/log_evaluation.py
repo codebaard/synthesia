@@ -2,7 +2,7 @@ from numpy import genfromtxt
 import numpy as np
 import matplotlib.pyplot as plt
 
-log_data = genfromtxt('../midi-test/out.csv',
+log_data = genfromtxt('../server/out.csv',
                         delimiter=',',
                         skip_header=1,
                         converters = {
