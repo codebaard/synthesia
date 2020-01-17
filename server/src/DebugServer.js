@@ -58,6 +58,12 @@ class DebugServer {
     }
 
     getRandomKeypoint(index) {
+        let keypoint = {
+            index: index,
+            x: 400,
+            y: 500,
+            z: 3
+        }
         if (index == 7) {
             keypoint.x = 400
             keypoint.y = 400
