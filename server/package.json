@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node main.js",
+    "build": "./node_modules/pkg/lib-es5/bin.js -t node12-win,node12-mac main.js -o build/server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,5 +20,8 @@
     "express": "^4.17.1",
     "midi": "^1.0.0",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "pkg": "^4.4.2"
   }
 }
