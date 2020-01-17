@@ -2,8 +2,8 @@ const MidiOutput = require('./MidiOutput');
 
 class MusicControl {
 
-    constructor() {
-        this.midi = new MidiOutput()
+    constructor(port = 0) {
+        this.midi = new MidiOutput(port)
         this.selectedDrumTrack = 1;
         this.selectedBassTrack = 1;
     }

@@ -3,7 +3,7 @@ const EventEmitter = require('events');
 
 class MidiInput {
 
-    constructor(name = "Node Midi") {
+    constructor(port = 0) {
         this.emitter = new EventEmitter();
         this.midiIn = new midi.input()
 
@@ -11,12 +11,6 @@ class MidiInput {
         this.drumTrack = 1;
         this.bassTrack = 1;
         this.started = false;
-
-        // Count the available output ports.
-        this.midiIn.getPortCount();
-        
-        // Get the name of a specified output port.
-        this.midiIn.getPortName(0);
 
         this.midiIn.ignoreTypes(true, false, true)
 
@@ -69,7 +63,7 @@ class MidiInput {
           });
 
         // Open the first available output port.
-        this.midiIn.openPort(0);
+        this.midiIn.openPort(port);
     }
 
     onBarChange(callback) {
