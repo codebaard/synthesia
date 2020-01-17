@@ -39,7 +39,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Download math result for job 2
+      - name: Download server builds
         uses: actions/download-artifact@v1
         with:
           name: server_build
@@ -47,7 +47,7 @@ jobs:
         uses: fnkr/github-action-ghr@v1
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          GHR_COMPRESS: xz
+          GHR_COMPRESS: zip
           GHR_PATH: server_build/
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
