@@ -74,7 +74,17 @@ net.createServer(function (socket) {
   });
 }).listen(3000, ip_address);
 
+server.listen(8080);
+
+io.on('connection', client => {
+  console.log("Unity connected");
+});
+
 console.log('TCP Server at: ' + ip_address + ':' + 3000);
+
+const DebugServer = require('./src/DebugServer.js');
+const debugServer = new DebugServer(ip_address, 3000);
+debugServer.start();
 
 const MidiInput = require('./src/MidiInput');
 var midiin = new MidiInput()
