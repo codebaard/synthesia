@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v1.0.0
       with:
         # Artifact name
-        name: "server_build"
+        name: server_build
         # Directory containing files to upload
         path: "server/build/"
   release:
@@ -39,11 +39,15 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
+      - name: Download math result for job 2
+        uses: actions/download-artifact@v1
+        with:
+          name: server_build
       - name: Release
         uses: fnkr/github-action-ghr@v1
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GHR_COMPRESS: xz
-          GHR_PATH: server/build/
+          GHR_PATH: server_build/
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
