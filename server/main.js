@@ -16,39 +16,32 @@ var musicControl = new MusicControl();
 const Logger = require('./src/Logger.js');
 var logger = new Logger();
 
-
 let ip_address = '127.0.0.1';
-
-let temp = "";
 
 // start tcp server
 net.createServer(function (socket) {
-  socket.write('Echo server\r\n');
-  //socket.pipe(socket);
-
-  // Add a 'data' event handler to this instance of socket
   socket.on('data', function (data) {
     logInfo("Received:\n" +  data);
     try {
+      // split data packets at '\n'
       let splittedData = data.toString().split('\n');
+      // only use last packet
       data = splittedData[splittedData.length - 2]
-      //console.log('DATA ' + socket.remoteAddress + ': ' + data);
-      temp += data.toString();
       const dataString = data.toString();
+      // parse json string
       const jsonObject = JSON.parse(dataString);
-      //const sentTime = new Date(jsonObject.Timestamp.Timestamp);
-      //logInfo("Data sent at: " + sentTime)
-      //logInfo("Time for receiving data: " + (Date.now() - sentTime) + "ms")
+      // convert raw data to local data for unity
       const unity_data = ConvertPoseData(jsonObject, midiin, musicControl);
+      // send to unity
       io.emit('unity_pose_data', unity_data);
+      // log data to csv
       logger.log(unity_data,jsonObject);
+      // log data to console
       logInfo("Emitted to Unity: \n" + JSON.stringify(unity_data));
-      temp = "";
+      // set midi notes based on data
       controlMusic(unity_data)
     } catch (error) {
-      logError("error: ");
-      logError(error);
-      //logError("current string:" + data.toString());
+      logError("error: " + error);
     }
   });
 }).listen(3000, ip_address);
@@ -64,7 +57,6 @@ console.log('TCP Server at: ' + ip_address + ':' + 3000);
 const DebugServer = require('./src/DebugServer.js');
 const debugServer = new DebugServer(ip_address, 3000);
 debugServer.start();
-
 
 
 function controlMusic(data) {
