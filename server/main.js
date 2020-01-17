@@ -76,10 +76,10 @@ net.createServer(function (socket) {
 
 console.log('TCP Server at: ' + ip_address + ':' + 3000);
 
-const MidiInput = require('./MidiInput');
+const MidiInput = require('./src/MidiInput');
 var midiin = new MidiInput()
 
-const MusicControl = require('./MusicControl.js');
+const MusicControl = require('./src/MusicControl.js');
 
 var musicControl = new MusicControl();
 
