@@ -1,0 +1,4 @@
+[submodule "KinectBodyTrack"]
+	path = KinectBodyTrack
+	url = https://github.com/codebaard/KinectBodyTrack.git
+	branch = master
