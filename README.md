@@ -1,5 +1,9 @@
 # Synthesia
 
+<div style="text-align:center">
+<img src="misc/banner.gif" alt="synthesia gameplay">
+</div>
+
 This app lets you control a music sequencer with your hand position.
 It uses Kinect as the pose estimation software.
 Unity3D as the frontend for visualization.
