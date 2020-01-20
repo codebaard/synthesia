@@ -55,3 +55,7 @@ Depending on your physical setup you have to ways to make MIDI work:
 ## How to display diagrams
 
 Run `python log_evaluation.py <filepath to out.csv>`
+
+For dummy log run:
+
+`python python/log_evaluation.py python/dummy.csv` in root directory.

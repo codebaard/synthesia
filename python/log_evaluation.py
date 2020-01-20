@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import sys
 
 
-filepath = '../server/build/out.csv'
+filepath = 'dummy.csv'
 
 if len(sys.argv) >= 2: 
     filepath = sys.argv[1]
