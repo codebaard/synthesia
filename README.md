@@ -50,3 +50,8 @@ Depending on your physical setup you have to ways to make MIDI work:
 - Windows: use LoopBe Internal MIDI to connect MIDI services: https://nerds.de/en/download.html. All other Settings are the same as in     1.
 
 - MAC: Macs MIDI routing should work out of the box with the internal tools.
+
+
+## How to display diagrams
+
+Run `python log_evaluation.py <filepath to out.csv>`

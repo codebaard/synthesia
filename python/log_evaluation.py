@@ -1,8 +1,17 @@
 from numpy import genfromtxt
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
-log_data = genfromtxt('../server/out.csv',
+
+filepath = '../server/build/out.csv'
+
+if len(sys.argv) >= 2: 
+    filepath = sys.argv[1]
+
+print(filepath)
+
+log_data = genfromtxt(filepath,
                         delimiter=',',
                         skip_header=1,
                         converters = {
